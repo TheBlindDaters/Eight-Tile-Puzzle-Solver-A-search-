@@ -258,7 +258,7 @@ class Solve8:
     def Solve(self, tile):
         """
         Input: an 8 tile object
-        Output: a list of moves which will generate the winning boar
+        Output: a list of moves which will generate the winning board
         when applied one after the other to the input 8 tile object
         check out the example moves above, howerever they are reversed and
         multiplied by -1, in your case no reverse or -1, just apply them
