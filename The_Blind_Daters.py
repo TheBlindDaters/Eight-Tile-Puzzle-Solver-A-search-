@@ -10,6 +10,7 @@ from IPython.display import clear_output
 from PIL import Image, ImageDraw, ImageFont
 from PIL import Image  # if needed more can be importaed
 import imageio
+import time
 
 
 class EightTile():
@@ -202,7 +203,7 @@ class EightTile():
         return EightTile.GenerateImage(me.Board)
 
 
-class Nodes:
+class BoardStates:
     def __init__(self, board, parent=None, move=None):
         self.board = board
         self.parent = parent
@@ -234,7 +235,7 @@ class Nodes:
         for row in range(3):
             for column in range(3):
                 if self.board.Board[row][column] != 0:
-                    x, y = divmod(self.board.Board[row][column]-1, 3)
+                    x, y = divmod(self.board.Board[row][column] - 1, 3)
                     distance += abs(x - row) + abs(y - column)
         return distance
 
@@ -242,6 +243,7 @@ class Nodes:
     # f function (sum of cost function and heuristic value)
     def f(self):
         return self.g + self.h
+
 
 class Solve8:
     def __init__(self):
@@ -258,7 +260,7 @@ class Solve8:
     def Solve(self, tile):
         """
         Input: an 8 tile object
-        Output: a list of moves which will generate the winning board
+        Output: a list of moves which will generate the winning boar
         when applied one after the other to the input 8 tile object
         check out the example moves above, howerever they are reversed and
         multiplied by -1, in your case no reverse or -1, just apply them
@@ -266,7 +268,7 @@ class Solve8:
         movez should contain the minimum number of moves needed to solve the puzzle
         """
 
-        current = Nodes(tile)
+        current = BoardStates(tile)
         self.open.append(current)
 
         while True:
@@ -291,17 +293,20 @@ class Solve8:
                 childs, mover = temp.new_boards()  # gets all allowed EightTile instances and the moves done to get to it
 
                 for c, kid in enumerate(childs):
-                    current = Nodes(kid, temp, mover[c])  # creates node instances to calculate f function and store move
+                    current = BoardStates(kid, temp,
+                                          mover[c])  # creates node instances to calculate f function and store move
                     if not self.array_in_set(current.board.Board):
                         self.open.append(current)
 
         return list(reversed(movez))  # returns list of moves required to solve the puzzle
 
 
-#example usage
+# example usage
 t = EightTile()
-t.shuffle(1000)
+t.shuffle(82)
 print(t.Board)
+start_time = time.time()
 p = Solve8()
-print(p.Solve(t))
-
+print(len(p.Solve(t)))
+time_duration = time.time() - start_time
+print(time_duration)
